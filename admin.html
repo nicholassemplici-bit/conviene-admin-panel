@@ -1,118 +1,633 @@
-"""CONVIENE - verifica in sola lettura della copertura Open Prices."""
-import json
-import os
-import time
-import urllib.error
-import urllib.parse
-import urllib.request
-from collections import Counter
-from datetime import date, timedelta
 
-SUPABASE_URL = os.environ['SUPABASE_URL'].rstrip('/')
-SUPABASE_KEY = os.environ['SUPABASE_SECRET_KEY']
-LIMIT = min(max(int(os.getenv('CONVIENE_EAN_LIMIT', '200')), 1), 1000)
-BATCH_SIZE = 20
-API = 'https://prices.openfoodfacts.org/api/v1/prices'
-HEADERS = {'User-Agent': 'CONVIENE/0.2 (GitHub catalog importer; read-only coverage check)', 'Accept': 'application/json'}
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>CONVIENE · Amministrazione prezzi</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #f4f8f5;
+      color: #1b3426;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { background: #116e45; color: white; padding: 24px 18px; }
+    header .wrap, main { max-width: 900px; margin: auto; }
+    h1 { margin: 0; font-size: 1.7rem; letter-spacing: .02em; }
+    h2 { margin: .2rem 0 1rem; font-size: 1.2rem; }
+    p { line-height: 1.5; }
+    main { padding: 20px 16px 60px; }
+    .panel {
+      background: white;
+      border: 1px solid #dce7e0;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 9px #163a1c0b;
+    }
+    .muted { color: #617567; font-size: .93rem; }
+    .notice {
+      border-left: 4px solid #c59034;
+      background: #fff7e8;
+      padding: 12px 14px;
+      border-radius: 8px;
+    }
+    .good { color: #136b41; }
+    .bad { color: #a12b28; }
+    label {
+      display: block;
+      font-weight: 650;
+      font-size: .93rem;
+      margin: 15px 0 6px;
+    }
+    input, textarea {
+      display: block;
+      width: 100%;
+      font: inherit;
+      border: 1px solid #b9cfc0;
+      padding: 11px;
+      border-radius: 9px;
+      background: white;
+      color: #1b3426;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    button {
+      font: inherit;
+      font-weight: 700;
+      border: 0;
+      border-radius: 9px;
+      background: #137849;
+      color: white;
+      padding: 11px 15px;
+      cursor: pointer;
+    }
+    button.secondary { background: #e4f2e9; color: #115c37; }
+    button.danger { background: #b43e36; }
+    button:disabled { opacity: .45; cursor: default; }
+    .bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: white;
+      color: #1b3426;
+      border: 1px solid #dae7dd;
+      padding: 14px;
+      border-radius: 12px;
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+    .item:hover, .item:focus {
+      border-color: #137849;
+      outline: 2px solid #13784933;
+    }
+    .item.selected { border: 2px solid #137849; }
+    a { color: #176e4b; overflow-wrap: anywhere; }
+    dt { color: #617567; font-size: .82rem; margin-top: 12px; }
+    dd {
+      margin: 2px 0 0;
+      overflow-wrap: anywhere;
+      font-weight: 600;
+    }
+    .hidden { display: none !important; }
+    #message { margin-bottom: 15px; white-space: pre-wrap; }
+    @media (max-width: 560px) {
+      .panel { padding: 16px; }
+      .actions button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>CONVIENE</h1>
+    <div>Amministrazione · verifica dei prezzi</div>
+  </div>
+</header>
+<main>
+  <p class="notice">
+    Le segnalazioni sono <strong>in attesa di verifica</strong>.
+    Approvare registra il controllo, ma non pubblica automaticamente
+    un prezzo come offerta attuale.
+  </p>
 
+  <div id="message" class="hidden" role="status" aria-live="polite"></div>
 
-def get_json(url, headers, attempts=3):
-    for attempt in range(1, attempts + 1):
-        try:
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=45) as response:
-                return json.load(response)
-        except urllib.error.HTTPError as exc:
-            code = exc.code
-            detail = exc.read(200).decode('utf-8', 'replace')
-            if code not in (429, 500, 502, 503, 504) or attempt == attempts:
-                raise RuntimeError(f'HTTP {code} da {urllib.parse.urlsplit(url).netloc}: {detail[:100]}') from exc
-            print(f'HTTP {code}, tentativo {attempt}/{attempts}; pausa...', flush=True)
-        except (urllib.error.URLError, TimeoutError) as exc:
-            if attempt == attempts:
-                raise RuntimeError(f'Connessione non riuscita: {exc}') from exc
-        time.sleep(5 * attempt)
-    raise RuntimeError('Richiesta non riuscita')
+  <section id="loginPanel" class="panel">
+    <h2>Accesso amministratore</h2>
+    <p class="muted">
+      Usa email e password del tuo account CONVIENE.
+      La password non viene salvata in questa pagina.
+    </p>
 
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
 
-def get_eans():
-    params = urllib.parse.urlencode({'select': 'ean', 'order': 'id.asc', 'limit': str(LIMIT)})
-    rows = get_json(f'{SUPABASE_URL}/rest/v1/product_variants?{params}', {
-        'apikey': SUPABASE_KEY,
-        'Accept': 'application/json',
-    })
-    return list(dict.fromkeys(str(r.get('ean') or '').strip() for r in rows if r.get('ean')))
+      <label for="password">Password</label>
+      <input id="password" type="password"
+        autocomplete="current-password" minlength="6" required>
 
+      <div class="actions">
+        <button id="loginBtn" type="submit">Accedi</button>
+      </div>
+    </form>
+  </section>
 
-def main():
-    print('CONVIENE - OPEN PRICES - SOLO SIMULAZIONE', flush=True)
-    print('Nessuna modifica a Supabase. Nessun prezzo viene registrato.', flush=True)
-    eans = get_eans()
-    print(f'EAN del catalogo selezionati: {len(eans)}', flush=True)
-    if not eans:
-        raise RuntimeError('Nessun EAN trovato')
-    cutoff = (date.today() - timedelta(days=90)).isoformat()
-    metrics = Counter()
-    samples = []
-    for start in range(0, len(eans), BATCH_SIZE):
-        group = eans[start:start + BATCH_SIZE]
-        page = 1
-        while page <= 10:
-            query = urllib.parse.urlencode({
-                'product_code__in': ','.join(group),
-                'currency': 'EUR',
-                'type': 'PRODUCT',
-                'date__gte': cutoff,
-                'size': 100,
-                'page': page,
-            })
-            data = get_json(API + '?' + query, HEADERS)
-            items = data.get('items', [])
-            if not isinstance(items, list):
-                raise RuntimeError('Formato inatteso: items non e una lista')
-            metrics['risultati_europei'] += len(items)
-            for item in items:
-                if item.get('product_code') not in group:
-                    continue
-                loc = item.get('location') or {}
-                country = str(loc.get('osm_address_country_code') or '').lower()
-                if country != 'it':
-                    metrics['fuori_italia_o_senza_paese'] += 1
-                    continue
-                if item.get('duplicate_of') is not None:
-                    metrics['duplicati'] += 1
-                    continue
-                if item.get('price') is None or not item.get('date'):
-                    metrics['dati_incompleti'] += 1
-                    continue
-                metrics['italia_validi'] += 1
-                if len(samples) < 15:
-                    samples.append({
-                        'ean': item.get('product_code'),
-                        'prezzo_eur': item.get('price'),
-                        'data': item.get('date'),
-                        'negozio': loc.get('osm_name') or loc.get('osm_brand'),
-                        'citta': loc.get('osm_address_city'),
-                        'id_prezzo': item.get('id'),
-                    })
-            pages = data.get('pages', 1)
-            if not isinstance(pages, int) or page >= pages:
-                break
-            page += 1
-        metrics['ean_esaminati'] += len(group)
-        print(f"Esaminati {metrics['ean_esaminati']}/{len(eans)} EAN - prezzi italiani recenti: {metrics['italia_validi']}", flush=True)
-        time.sleep(1)
-    print('\n===== RIEPILOGO OPEN PRICES =====')
-    print(f"EAN esaminati: {metrics['ean_esaminati']}")
-    print(f"Prezzi EUR ultimi 90 giorni restituiti: {metrics['risultati_europei']}")
-    print(f"Prezzi con negozio in Italia: {metrics['italia_validi']}")
-    print(f"Prezzi fuori Italia o senza paese: {metrics['fuori_italia_o_senza_paese']}")
-    print('Esempi (non importati):')
-    for s in samples:
-        print(json.dumps(s, ensure_ascii=False))
-    print('SIMULAZIONE COMPLETATA: NESSUNA SCRITTURA SU SUPABASE')
-    print('Attenzione: la presenza in Italia non garantisce presenza nelle province MI/PV/CO.')
+  <section id="adminPanel" class="hidden">
+    <div class="panel">
+      <div class="bar">
+        <div>
+          <h2>Segnalazioni in attesa</h2>
+          <p id="count" class="muted">Caricamento...</p>
+        </div>
+        <div class="actions">
+          <button id="refreshBtn" class="secondary">Aggiorna elenco</button>
+          <button id="logoutBtn" class="secondary">Esci</button>
+        </div>
+      </div>
+      <div id="reportList"></div>
+    </div>
 
+    <section id="detailPanel" class="panel hidden">
+      <h2>Esamina segnalazione</h2>
+      <dl id="reportDetails"></dl>
+      <p class="notice">
+        Verifica che EAN, prezzo, data, insegna e fonte siano
+        attendibili prima di decidere. Un link o una dichiarazione
+        dell'utente non garantiscono la veridicità del dato.
+      </p>
 
-if __name__ == '__main__':
-    main()
+      <label for="note">
+        Motivazione della decisione (10–500 caratteri)
+      </label>
+
+      <textarea id="note" maxlength="500"
+        placeholder="Descrivi le verifiche effettuate o il motivo del rifiuto."></textarea>
+
+      <div class="actions">
+        <button id="approveBtn">Approva</button>
+        <button id="rejectBtn" class="danger">Rifiuta</button>
+      </div>
+    </section>
+  </section>
+</main>
+
+<script>
+'use strict';
+
+// Gli stessi due valori PUBBLICI dell'app CONVIENE.
+// Non inserire mai sb_secret_ o password nel codice.
+
+const SUPABASE_URL = 'INCOLLA_QUI_PROJECT_URL';
+const SUPABASE_KEY = 'INCOLLA_QUI_SB_PUBLISHABLE';
+
+const BASE = String(SUPABASE_URL).trim().replace(/\/+$/, '');
+const KEY = String(SUPABASE_KEY).trim();
+
+const CONFIG_OK =
+  /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(BASE) &&
+  KEY.startsWith('sb_publishable_');
+
+let access = '';
+let refresh = '';
+let expiresAt = 0;
+let reports = [];
+let chosen = null;
+let busy = false;
+
+const el = id => document.getElementById(id);
+
+const visible = (node, show) => {
+  node.classList.toggle('hidden', !show);
+};
+
+function message(text, isError = false) {
+  const node = el('message');
+  node.textContent = text;
+  node.className = isError ? 'panel bad' : 'panel good';
+  visible(node, !!text);
+}
+
+function setBusy(value) {
+  busy = value;
+  for (const id of [
+    'loginBtn', 'refreshBtn', 'approveBtn', 'rejectBtn'
+  ]) {
+    el(id).disabled = value;
+  }
+}
+
+async function rawRequest(
+  path,
+  { method = 'POST', body, token = '' } = {}
+) {
+  if (!CONFIG_OK) {
+    throw new Error(
+      'Configura Project URL e sb_publishable_ nel file admin.html.'
+    );
+  }
+
+  const res = await fetch(BASE + path, {
+    method,
+    headers: {
+      apikey: KEY,
+      Accept: 'application/json',
+      ...(token ? { Authorization: 'Bearer ' + token } : {}),
+      ...(body !== undefined
+        ? { 'Content-Type': 'application/json' }
+        : {}),
+    },
+    ...(body !== undefined
+      ? { body: JSON.stringify(body) }
+      : {}),
+  });
+
+  const text = await res.text();
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = text;
+  }
+
+  if (!res.ok) {
+    const reason =
+      data && typeof data === 'object'
+        ? data.message ||
+          data.error_description ||
+          data.msg ||
+          data.error ||
+          data.code
+        : data;
+
+    const err = new Error(
+      'HTTP ' + res.status + ': ' +
+      String(reason || 'Richiesta fallita')
+    );
+    err.status = res.status;
+    throw err;
+  }
+
+  return data;
+}
+
+async function userToken() {
+  if (!access) {
+    throw new Error('Accedi nuovamente.');
+  }
+
+  if (Date.now() < expiresAt - 60000) {
+    return access;
+  }
+
+  if (!refresh) {
+    throw new Error('Sessione scaduta. Accedi nuovamente.');
+  }
+
+  const data = await rawRequest(
+    '/auth/v1/token?grant_type=refresh_token',
+    { body: { refresh_token: refresh } }
+  );
+
+  access = data.access_token;
+  refresh = data.refresh_token || refresh;
+  expiresAt = Date.now() +
+    Number(data.expires_in || 3600) * 1000;
+
+  return access;
+}
+
+async function rpc(name, body) {
+  return rawRequest('/rest/v1/rpc/' + name, {
+    token: await userToken(),
+    body,
+  });
+}
+
+function addDetail(label, value) {
+  const dt = document.createElement('dt');
+  dt.textContent = label;
+
+  const dd = document.createElement('dd');
+  dd.textContent = String(value ?? '—');
+
+  el('reportDetails').append(dt, dd);
+}
+
+const money = n =>
+  Number(n).toLocaleString('it-IT', {
+    style: 'currency',
+    currency: 'EUR'
+  });
+
+function renderDetails() {
+  visible(el('detailPanel'), !!chosen);
+  el('reportDetails').replaceChildren();
+
+  if (!chosen) return;
+
+  const r = chosen;
+
+  addDetail('ID segnalazione', r.id);
+  addDetail('EAN', r.ean);
+  addDetail('Supermercato', r.retailer_name);
+  addDetail(
+    'Località',
+    r.municipality + ' (' + r.province + ')'
+  );
+  addDetail('Prezzo segnalato', money(r.price));
+  addDetail('Data osservazione', r.observed_on);
+
+  const source = {
+    shelf_label: 'Etichetta scaffale',
+    receipt: 'Scontrino',
+    official_website: 'Sito ufficiale',
+  };
+
+  addDetail('Fonte', source[r.source_type] || r.source_type);
+  addDetail(
+    'Data invio',
+    new Date(r.created_at).toLocaleString('it-IT')
+  );
+
+  if (r.source_url) {
+    const dt = document.createElement('dt');
+    dt.textContent = 'Link fonte';
+
+    const dd = document.createElement('dd');
+
+    try {
+      const url = new URL(r.source_url);
+
+      if (!['https:', 'http:'].includes(url.protocol)) {
+        throw Error('Protocollo non consentito');
+      }
+
+      const a = document.createElement('a');
+      a.href = url.href;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = url.href;
+      dd.append(a);
+    } catch {
+      dd.textContent = 'Link non valido';
+    }
+
+    el('reportDetails').append(dt, dd);
+  }
+}
+
+function renderList() {
+  const list = el('reportList');
+  list.replaceChildren();
+
+  el('count').textContent =
+    reports.length + ' segnalazioni mostrate (massimo 50)';
+
+  if (!reports.length) {
+    const p = document.createElement('p');
+    p.className = 'muted';
+    p.textContent = 'Nessuna segnalazione in attesa.';
+    list.append(p);
+  }
+
+  for (const r of reports) {
+    const b = document.createElement('button');
+    b.className =
+      'item' + (chosen?.id === r.id ? ' selected' : '');
+    b.type = 'button';
+
+    b.textContent =
+      '#' + r.id +
+      ' · ' + r.retailer_name +
+      ' · ' + money(r.price) +
+      '\n' + r.municipality +
+      ' (' + r.province + ')' +
+      ' · ' + r.observed_on +
+      ' · EAN ' + r.ean;
+
+    b.style.whiteSpace = 'pre-line';
+
+    b.onclick = () => {
+      if (busy) return;
+
+      chosen = r;
+      el('note').value = '';
+
+      renderList();
+      renderDetails();
+
+      el('detailPanel').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    };
+
+    list.append(b);
+  }
+}
+
+async function loadReports() {
+  const data = await rpc(
+    'conviene_admin_pending_reports',
+    { p_max_rows: 50 }
+  );
+
+  if (!Array.isArray(data)) {
+    throw new Error('Elenco non valido');
+  }
+
+  reports = data;
+  chosen = null;
+  el('note').value = '';
+
+  renderList();
+  renderDetails();
+}
+
+async function doLogin(event) {
+  event.preventDefault();
+
+  if (busy) return;
+
+  setBusy(true);
+  message('');
+
+  try {
+    const data = await rawRequest(
+      '/auth/v1/token?grant_type=password',
+      {
+        body: {
+          email: el('email').value.trim(),
+          password: el('password').value
+        }
+      }
+    );
+
+    access = data.access_token;
+    refresh = data.refresh_token || '';
+    expiresAt = Date.now() +
+      Number(data.expires_in || 3600) * 1000;
+
+    el('password').value = '';
+
+    // Questo controllo viene eseguito sul database.
+    await loadReports();
+
+    visible(el('loginPanel'), false);
+    visible(el('adminPanel'), true);
+
+    message(
+      'Accesso amministratore riuscito. ' +
+      'Controlla attentamente le fonti prima di decidere.'
+    );
+  } catch (e) {
+    access = '';
+    refresh = '';
+    expiresAt = 0;
+
+    message(
+      'Accesso non riuscito: ' + e.message,
+      true
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function doDecision(decision) {
+  if (busy || !chosen) return;
+
+  const note = el('note').value.trim();
+
+  if (note.length < 10 || note.length > 500) {
+    message(
+      'Inserisci una motivazione tra 10 e 500 caratteri.',
+      true
+    );
+    return;
+  }
+
+  const id = chosen.id;
+  const action =
+    decision === 'approved' ? 'APPROVARE' : 'RIFIUTARE';
+
+  if (!confirm(
+    action + ' la segnalazione #' + id +
+    '? La decisione sarà registrata nel database.'
+  )) {
+    return;
+  }
+
+  setBusy(true);
+  message('');
+
+  try {
+    await rpc('conviene_review_price_report', {
+      p_report_id: id,
+      p_decision: decision,
+      p_note: note,
+    });
+
+    await loadReports();
+
+    message(
+      'Segnalazione #' + id + ' ' +
+      (decision === 'approved'
+        ? 'approvata'
+        : 'rifiutata') +
+      '. Nessun prezzo è stato pubblicato automaticamente.'
+    );
+  } catch (e) {
+    message(
+      'Operazione non riuscita: ' + e.message,
+      true
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function doRefresh() {
+  if (busy) return;
+
+  setBusy(true);
+  message('');
+
+  try {
+    await loadReports();
+  } catch (e) {
+    message('Errore: ' + e.message, true);
+  } finally {
+    setBusy(false);
+  }
+}
+
+function doLogout() {
+  const old = access;
+
+  access = '';
+  refresh = '';
+  expiresAt = 0;
+  chosen = null;
+  reports = [];
+
+  el('password').value = '';
+  el('note').value = '';
+
+  visible(el('adminPanel'), false);
+  visible(el('loginPanel'), true);
+
+  message('Sei uscito dal pannello.');
+
+  if (old) {
+    rawRequest('/auth/v1/logout', {
+      token: old
+    }).catch(() => {});
+  }
+}
+
+el('loginForm').addEventListener('submit', doLogin);
+
+el('refreshBtn').addEventListener('click', doRefresh);
+
+el('approveBtn').addEventListener(
+  'click',
+  () => doDecision('approved')
+);
+
+el('rejectBtn').addEventListener(
+  'click',
+  () => doDecision('rejected')
+);
+
+el('logoutBtn').addEventListener('click', doLogout);
+
+if (!CONFIG_OK) {
+  message(
+    'Inserisci Project URL e chiave sb_publishable_ ' +
+    'nelle prime righe dello script.',
+    true
+  );
+}
+</script>
+</body>
+</html>
