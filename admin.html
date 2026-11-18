@@ -2,293 +2,262 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="referrer" content="no-referrer">
-  <title>CONVIENE Admin · Controllo prezzi</title>
-  <style>
-    :root {
-      font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      color: #20372a;
-      background: #f4f8f5;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; }
-    header {
-      padding: 24px 16px;
-      background: #126e46;
-      color: #fff;
-    }
-    header > div, main {
-      width: min(920px, 100%);
-      margin: auto;
-    }
-    header h1 {
-      margin: 0 0 4px;
-      font-size: 28px;
-    }
-    main { padding: 18px 14px 60px; }
-    .panel {
-      background: #fff;
-      border: 1px solid #dce7df;
-      border-radius: 15px;
-      padding: 19px;
-      margin: 0 0 16px;
-    }
-    h2 { font-size: 21px; margin: 0 0 10px; }
-    h3 { font-size: 17px; margin: 16px 0 8px; }
-    p { line-height: 1.5; }
-    .muted {
-      color: #64796c;
-      font-size: 14px;
-    }
-    .warning {
-      color: #77541e;
-      background: #fff5de;
-      padding: 13px;
-      border-radius: 10px;
-      line-height: 1.5;
-    }
-    .ok { color: #126b42; }
-    .error { color: #a62c2c; }
-    .hidden { display: none !important; }
-    label {
-      display: block;
-      font-weight: 700;
-      margin: 12px 0 5px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 11px;
-      font: inherit;
-      background: white;
-      color: #20372a;
-      border-radius: 9px;
-      border: 1px solid #bad0c0;
-    }
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-    button {
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      color: #fff;
-      background: #147b4b;
-      border: 0;
-      border-radius: 9px;
-      padding: 11px 14px;
-    }
-    button.secondary {
-      background: #e4f2e9;
-      color: #12623c;
-    }
-    button.danger { background: #ad4039; }
-    button:disabled {
-      cursor: default;
-      opacity: .5;
-    }
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 13px;
-    }
-    .item {
-      display: block;
-      width: 100%;
-      background: #fff;
-      color: #233a2b;
-      border: 1px solid #d9e7dd;
-      border-radius: 10px;
-      text-align: left;
-      margin: 8px 0;
-      padding: 13px;
-      line-height: 1.6;
-      white-space: pre-line;
-      overflow-wrap: anywhere;
-    }
-    .item.selected {
-      border: 2px solid #147b4b;
-    }
-    .importItem {
-      border-bottom: 1px solid #e5ede7;
-      padding: 13px 0;
-    }
-    .importItem:last-child { border-bottom: 0; }
-    .strong { font-weight: 750; }
-    .pill {
-      display: inline-block;
-      border-radius: 20px;
-      background: #fce9b9;
-      color: #754f12;
-      padding: 4px 9px;
-      font-size: 12px;
-      font-weight: 750;
-    }
-    .details {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 8px 14px;
-      margin-top: 10px;
-    }
-    .details > div { overflow-wrap: anywhere; }
-    .details span {
-      display: block;
-      color: #65776b;
-      font-size: 12px;
-      margin-bottom: 3px;
-    }
-    a {
-      color: #116d45;
-      overflow-wrap: anywhere;
-    }
-    #message {
-      margin: 0 0 15px;
-      white-space: pre-wrap;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>CONVIENE Admin - Verifica prezzi</title>
+<style>
+  :root {
+    font-family: system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    color: #203629;
+    background: #f3f8f5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  header {
+    background: #126e46;
+    color: white;
+    padding: 22px 16px;
+  }
+  header>div,main { max-width: 920px; margin: auto; }
+  h1 { margin: 0; font-size: 28px; }
+  h2 { font-size: 21px; margin: 0 0 9px; }
+  h3 { font-size: 17px; margin: 0 0 9px; }
+  main { padding: 20px 15px 50px; }
+  p { line-height: 1.5; }
+  .panel {
+    background: white;
+    border: 1px solid #dbe8df;
+    border-radius: 14px;
+    padding: 19px;
+    margin-bottom: 16px;
+  }
+  .muted { color: #627a6b; font-size: 14px; }
+  .warning {
+    background: #fff4df;
+    color: #75501b;
+    padding: 12px;
+    border-radius: 9px;
+  }
+  .good { color: #116f43; }
+  .error { color: #a22e28; }
+  .hidden { display: none!important; }
+  .row,.buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .row { justify-content: space-between; }
+  .buttons { margin-top: 13px; }
+  label {
+    display: block;
+    font-weight: 700;
+    margin: 15px 0 6px;
+  }
+  input,textarea {
+    width: 100%;
+    font: inherit;
+    padding: 11px;
+    border: 1px solid #bad0c0;
+    border-radius: 9px;
+    background: white;
+    color: #203629;
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  button {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 14px;
+    background: #147b4b;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button.secondary {
+    background: #e2f2e9;
+    color: #145b3b;
+  }
+  button.danger { background: #af4039; }
+  button:disabled { opacity: .45; cursor: default; }
+  .item {
+    display: block;
+    background: white;
+    color: #203629;
+    width: 100%;
+    text-align: left;
+    white-space: pre-line;
+    border: 1px solid #dce7df;
+    border-radius: 10px;
+    margin: 9px 0;
+    padding: 12px;
+    line-height: 1.5;
+  }
+  .item.selected { border: 2px solid #147b4b; }
+  .details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 11px;
+    margin: 14px 0;
+  }
+  .field {
+    overflow-wrap: anywhere;
+    font-weight: 650;
+  }
+  .field small {
+    display: block;
+    font-weight: 400;
+    color: #647a6b;
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  .tag {
+    background: #ffedc4;
+    color: #78521a;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  a { color: #126e46; overflow-wrap: anywhere; }
+  #message { white-space: pre-wrap; }
+  .spacer { margin-top: 17px; }
+</style>
 </head>
 <body>
-
 <header>
   <div>
     <h1>CONVIENE Admin</h1>
-    <div>Gestione segnalazioni e prezzi importati</div>
+    <div>Gestione segnalazioni e verifica prezzi Open Prices</div>
   </div>
 </header>
-
 <main>
   <p class="warning">
-    I prezzi importati da Open Prices sono dati storici da verificare.
-    La loro presenza non dimostra che siano disponibili oggi.
-    L'approvazione delle segnalazioni manuali non pubblica
-    automaticamente offerte nell'app.
+    I prezzi sono <strong>rilevazioni storiche</strong>.
+    Lo stato «reviewed» indica soltanto che la rilevazione
+    è stata controllata: non ne garantisce la validità oggi
+    e non la pubblica nell'app.
   </p>
 
   <div id="message" class="panel hidden"
-       role="status" aria-live="polite"></div>
+    role="status" aria-live="polite"></div>
 
-  <section class="panel" id="loginPanel">
+  <section id="loginPanel" class="panel">
     <h2>Accesso amministratore</h2>
-
     <p class="muted">
-      Accedi con l'account CONVIENE autorizzato.
+      Accedi con il tuo account CONVIENE.
       La password non viene memorizzata dal pannello.
     </p>
-
     <form id="loginForm">
       <label for="email">Email</label>
       <input id="email" type="email"
-             autocomplete="username" required>
+        autocomplete="username" required>
 
       <label for="password">Password</label>
       <input id="password" type="password"
-             autocomplete="current-password"
-             minlength="6" required>
+        autocomplete="current-password" minlength="6" required>
 
-      <div class="actions">
-        <button id="loginBtn" type="submit">Accedi</button>
+      <div class="buttons">
+        <button type="submit" id="loginBtn">Accedi</button>
       </div>
     </form>
   </section>
 
-  <div id="adminPanel" class="hidden">
-
+  <section id="adminPanel" class="hidden">
     <div class="panel row">
       <div>
-        <h2>Amministrazione prezzi</h2>
-        <div class="muted">
-          Dati accessibili solo a un amministratore autorizzato.
-        </div>
+        <h2>Pannello amministratore</h2>
+        <div class="muted">Accesso controllato da Supabase</div>
       </div>
-
-      <div class="actions">
+      <div class="buttons">
         <button class="secondary" id="refreshBtn"
-                type="button">Aggiorna tutto</button>
+          type="button">Aggiorna tutto</button>
         <button class="secondary" id="logoutBtn"
-                type="button">Esci</button>
+          type="button">Esci</button>
       </div>
     </div>
 
     <section class="panel">
       <div class="row">
         <h2>Segnalazioni manuali</h2>
-        <span id="manualCount" class="pill">—</span>
+        <span id="manualCount" class="tag">—</span>
       </div>
-
       <p class="muted">
-        Puoi approvare o rifiutare le segnalazioni inviate
-        dall'app, dopo averne verificato la fonte.
+        Prezzi inviati dagli utenti dall'app CONVIENE.
       </p>
-
       <div id="manualList"></div>
     </section>
 
     <section class="panel hidden" id="manualDetail">
-      <h3>Dettagli segnalazione selezionata</h3>
+      <h3>Esamina segnalazione manuale</h3>
       <div id="manualFields" class="details"></div>
-
       <p class="warning">
-        Approva soltanto se il prezzo e la sua fonte sono stati
-        verificati. Un prezzo approvato non diventa
-        automaticamente un'offerta attuale.
+        Approva soltanto dopo aver verificato la fonte.
+        La decisione non pubblica offerte attuali.
       </p>
-
-      <label for="note">
-        Motivazione della decisione (10–500 caratteri)
+      <label for="manualNote">
+        Motivazione (10–500 caratteri)
       </label>
+      <textarea id="manualNote" maxlength="500"
+        placeholder="Verifiche effettuate oppure motivo del rifiuto"></textarea>
 
-      <textarea id="note" maxlength="500"
-        placeholder="Indica le verifiche eseguite oppure il motivo del rifiuto."></textarea>
-
-      <div class="actions">
-        <button id="approveBtn" type="button">Approva</button>
-        <button id="rejectBtn" class="danger"
-                type="button">Rifiuta</button>
+      <div class="buttons">
+        <button id="manualApproveBtn" type="button">Approva</button>
+        <button id="manualRejectBtn" class="danger"
+          type="button">Rifiuta</button>
       </div>
     </section>
 
     <section class="panel">
       <div class="row">
         <h2>Prezzi importati da Open Prices</h2>
-        <span id="importCount" class="pill">—</span>
+        <span id="importCount" class="tag">—</span>
       </div>
-
       <p class="muted">
-        Elenco in sola lettura dei prezzi con stato
-        <strong>unverified</strong>. Nessun pulsante di approvazione:
-        dobbiamo ancora progettare il controllo delle località
-        e delle fonti.
+        Rilevazioni con stato <strong>unverified</strong>.
+        Controlla EAN, località, prezzo, data e attendibilità
+        della fonte prima di decidere.
       </p>
-
       <div id="importList"></div>
     </section>
 
-  </div>
+    <section class="panel hidden" id="importDetail">
+      <h3>Esamina prezzo Open Prices</h3>
+      <div id="importFields" class="details"></div>
+      <p class="warning">
+        <strong>Verifica</strong> porta lo stato a
+        <code>reviewed</code>; <strong>Rifiuta</strong>
+        porta lo stato a <code>rejected</code>.
+        Nessuna delle due azioni pubblica il prezzo
+        nel comparatore.
+      </p>
+      <label for="importNote">
+        Motivazione (10–500 caratteri)
+      </label>
+      <textarea id="importNote" maxlength="500"
+        placeholder="Indica come hai controllato prodotto, località e fonte"></textarea>
+
+      <div class="buttons">
+        <button id="importReviewBtn" type="button">
+          Segna come verificato
+        </button>
+        <button id="importRejectBtn" class="danger"
+          type="button">Rifiuta prezzo</button>
+      </div>
+    </section>
+  </section>
 </main>
 
 <script>
 'use strict';
 
-// Usa SOLO i due valori PUBBLICI dell'App.js funzionante.
-// Mai inserire password o chiavi sb_secret_ su GitHub.
-
+// Inserisci solo i due valori PUBBLICI già usati in CONVIENE.
+// Non usare sb_secret_ e non inserire password nel codice.
 const SUPABASE_URL = 'https://nlzwqvotupmrwwngoqtf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_rwhW55hI0B6fwDgqlOFpig_4FGEpA3t';
 
-const BASE = String(SUPABASE_URL)
-  .trim()
-  .replace(/\/+$/, '');
-
+const BASE = String(SUPABASE_URL).trim().replace(/\/+$/, '');
 const KEY = String(SUPABASE_KEY).trim();
 
 const CONFIG_OK =
@@ -300,91 +269,106 @@ let refreshToken = '';
 let expiresAt = 0;
 let manualReports = [];
 let importedPrices = [];
-let selectedReport = null;
+let selectedManual = null;
+let selectedImport = null;
 let busy = false;
 
-const $ = id => document.getElementById(id);
+const el = id => document.getElementById(id);
+const show = (id, value) =>
+  el(id).classList.toggle('hidden', !value);
 
-const show = (id, isVisible) =>
-  $(id).classList.toggle('hidden', !isVisible);
+const euro = n => Number(n).toLocaleString('it-IT', {
+  style: 'currency',
+  currency: 'EUR'
+});
 
-const money = n =>
-  Number(n).toLocaleString('it-IT', {
-    style: 'currency',
-    currency: 'EUR'
-  });
-
-const dateIT = d =>
-  d
-    ? String(d).slice(0, 10).split('-').reverse().join('/')
-    : 'Non indicata';
+const dateIt = d => d
+  ? String(d).slice(0,10).split('-').reverse().join('/')
+  : 'Non indicata';
 
 function message(text, error = false) {
-  $('message').textContent = text;
-  $('message').className =
-    'panel ' + (error ? 'error' : 'ok');
-
-  show('message', !!text);
+  el('message').textContent = text;
+  el('message').className =
+    'panel ' + (error ? 'error' : 'good');
+  show('message', Boolean(text));
 }
 
 function setBusy(value) {
   busy = value;
-
   for (const id of [
     'loginBtn',
     'refreshBtn',
-    'approveBtn',
-    'rejectBtn'
+    'manualApproveBtn',
+    'manualRejectBtn',
+    'importReviewBtn',
+    'importRejectBtn',
+    'logoutBtn'
   ]) {
-    $(id).disabled = value;
+    el(id).disabled = value;
   }
 }
 
-function field(container, label, value) {
-  const box = document.createElement('div');
+function field(container, title, value) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'field';
 
-  const heading = document.createElement('span');
-  heading.textContent = label;
+  const label = document.createElement('small');
+  label.textContent = title;
 
-  const content = document.createElement('div');
-  content.className = 'strong';
+  const text = document.createElement('div');
+  text.textContent =
+    value == null || value === '' ? '—' : String(value);
 
-  content.textContent = String(
-    value == null || value === '' ? '—' : value
-  );
-
-  box.append(heading, content);
-  container.append(box);
+  wrapper.append(label, text);
+  container.append(wrapper);
 }
 
-async function rawRequest(
-  path,
-  { method = 'POST', body, token } = {}
-) {
+function addLink(container, value) {
+  if (!value) return;
+  try {
+    const url = new URL(value);
+    if (!['https:','http:'].includes(url.protocol)) {
+      throw Error('Protocollo non valido');
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'field';
+
+    const label = document.createElement('small');
+    label.textContent = 'Link alla fonte';
+
+    const a = document.createElement('a');
+    a.href = url.href;
+    a.textContent = url.href;
+    a.rel = 'noopener noreferrer';
+    a.target = '_blank';
+
+    wrap.append(label, a);
+    container.append(wrap);
+  } catch {
+    field(container,'Link alla fonte','Link non valido');
+  }
+}
+
+async function request(path, {body, token, method='POST'}={}) {
   if (!CONFIG_OK) {
-    throw new Error(
-      'Controlla Project URL e chiave sb_publishable_ nel file admin.html.'
+    throw Error(
+      'Inserisci Project URL e sb_publishable_ nel file admin.html.'
     );
   }
 
   const response = await fetch(BASE + path, {
     method,
-
     headers: {
       apikey: KEY,
       Accept: 'application/json',
-
-      ...(token
-        ? { Authorization: 'Bearer ' + token }
-        : {}),
-
+      ...(token ? {Authorization:'Bearer ' + token} : {}),
       ...(body !== undefined
-        ? { 'Content-Type': 'application/json' }
+        ? {'Content-Type':'application/json'}
         : {})
     },
-
     ...(body !== undefined
-      ? { body: JSON.stringify(body) }
+      ? {body:JSON.stringify(body)}
       : {})
   });
 
@@ -393,34 +377,34 @@ async function rawRequest(
 
   try {
     data = raw ? JSON.parse(raw) : null;
-  } catch (_) {
+  } catch {
     data = raw;
   }
 
   if (!response.ok) {
-    const detail =
+    const error =
       data && typeof data === 'object'
         ? (
-            data.message ||
-            data.error_description ||
-            data.msg ||
-            data.error ||
-            data.code
-          )
+          data.message ||
+          data.error_description ||
+          data.msg ||
+          data.error ||
+          data.code
+        )
         : data;
 
-    throw new Error(
+    throw Error(
       'HTTP ' + response.status + ': ' +
-      String(detail || 'Richiesta non riuscita')
+      String(error || 'Richiesta non riuscita')
     );
   }
 
   return data;
 }
 
-async function currentToken() {
+async function userToken() {
   if (!accessToken) {
-    throw new Error('Accedi nuovamente.');
+    throw Error('Accedi nuovamente.');
   }
 
   if (Date.now() < expiresAt - 60000) {
@@ -428,291 +412,262 @@ async function currentToken() {
   }
 
   if (!refreshToken) {
-    throw new Error(
-      'Sessione scaduta. Accedi nuovamente.'
-    );
+    throw Error('Sessione scaduta. Accedi nuovamente.');
   }
 
-  const data = await rawRequest(
+  const data = await request(
     '/auth/v1/token?grant_type=refresh_token',
-    {
-      body: { refresh_token: refreshToken }
-    }
+    {body:{refresh_token:refreshToken}}
   );
 
   accessToken = data.access_token;
   refreshToken = data.refresh_token || refreshToken;
-
   expiresAt =
-    Date.now() +
-    Number(data.expires_in || 3600) * 1000;
+    Date.now() + Number(data.expires_in || 3600) * 1000;
 
   return accessToken;
 }
 
-async function rpc(name, body) {
-  return rawRequest(
-    '/rest/v1/rpc/' + name,
-    {
-      token: await currentToken(),
-      body
-    }
-  );
+async function rpc(functionName, body) {
+  return request('/rest/v1/rpc/' + functionName, {
+    body,
+    token: await userToken()
+  });
 }
 
 // SEGNALAZIONI MANUALI
 
 function renderManual() {
-  $('manualCount').textContent =
+  el('manualCount').textContent =
     manualReports.length + ' in attesa';
 
-  const list = $('manualList');
+  const list = el('manualList');
   list.replaceChildren();
 
   if (!manualReports.length) {
     const p = document.createElement('p');
     p.className = 'muted';
-
     p.textContent =
       'Nessuna segnalazione manuale in attesa.';
-
     list.append(p);
   }
 
   for (const r of manualReports) {
     const button = document.createElement('button');
-
     button.type = 'button';
-
-    button.className =
-      'item' +
-      (selectedReport && selectedReport.id === r.id
-        ? ' selected'
-        : '');
+    button.className = 'item' + (
+      selectedManual && selectedManual.id === r.id
+        ? ' selected' : ''
+    );
 
     button.textContent =
-      '#' + r.id +
-      ' · ' + r.retailer_name +
-      ' · ' + money(r.price) +
+      '#' + r.id + ' · ' +
+      r.retailer_name + ' · ' + euro(r.price) +
       '\n' + r.municipality +
-      ' (' + r.province + ')' +
-      ' · ' + dateIT(r.observed_on) +
-      ' · EAN ' + r.ean;
+      ' (' + r.province + ') · ' +
+      dateIt(r.observed_on) + ' · EAN ' + r.ean;
 
     button.onclick = () => {
       if (busy) return;
-
-      selectedReport = r;
-      $('note').value = '';
+      selectedManual = r;
+      el('manualNote').value = '';
 
       renderManual();
-      renderSelectedReport();
+      renderManualDetail();
+
+      el('manualDetail').scrollIntoView({
+        behavior:'smooth',
+        block:'start'
+      });
     };
 
     list.append(button);
   }
 }
 
-function renderSelectedReport() {
-  show('manualDetail', !!selectedReport);
+function renderManualDetail() {
+  show('manualDetail', Boolean(selectedManual));
 
-  const container = $('manualFields');
+  const container = el('manualFields');
   container.replaceChildren();
+  if (!selectedManual) return;
 
-  if (!selectedReport) return;
+  const r = selectedManual;
 
-  const r = selectedReport;
-
-  field(container, 'ID', r.id);
-  field(container, 'EAN', r.ean);
-  field(container, 'Supermercato', r.retailer_name);
-  field(container, 'Comune', r.municipality);
-  field(container, 'Provincia', r.province);
-  field(container, 'Prezzo segnalato', money(r.price));
-  field(container, 'Data rilevazione', dateIT(r.observed_on));
-  field(container, 'Fonte', r.source_type);
-
+  field(container,'ID segnalazione',r.id);
+  field(container,'EAN',r.ean);
+  field(container,'Supermercato',r.retailer_name);
+  field(container,'Comune',r.municipality);
+  field(container,'Provincia',r.province);
+  field(container,'Prezzo',euro(r.price));
+  field(container,'Data',dateIt(r.observed_on));
+  field(container,'Fonte',r.source_type);
   field(
     container,
-    'Data invio',
+    'Invio',
     r.created_at
       ? new Date(r.created_at).toLocaleString('it-IT')
       : '—'
   );
 
-  if (r.source_url) {
-    try {
-      const url = new URL(r.source_url);
-
-      if (
-        url.protocol !== 'https:' &&
-        url.protocol !== 'http:'
-      ) {
-        throw new Error('Protocollo non consentito');
-      }
-
-      const area = document.createElement('div');
-
-      const label = document.createElement('span');
-      label.textContent = 'Link fonte';
-
-      const link = document.createElement('a');
-
-      link.href = url.href;
-      link.textContent = url.href;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-
-      area.append(label, link);
-      container.append(area);
-    } catch (_) {
-      field(container, 'Link fonte', 'Link non valido');
-    }
-  }
+  addLink(container,r.source_url);
 }
 
-// PREZZI OPEN PRICES - SOLA LETTURA
+// PREZZI OPEN PRICES
 
 function renderImports() {
-  $('importCount').textContent =
+  el('importCount').textContent =
     importedPrices.length + ' da verificare';
 
-  const list = $('importList');
+  const list = el('importList');
   list.replaceChildren();
 
   if (!importedPrices.length) {
     const p = document.createElement('p');
-
     p.className = 'muted';
     p.textContent =
-      'Nessun prezzo importato da verificare.';
-
+      'Nessun prezzo Open Prices da verificare.';
     list.append(p);
   }
 
-  for (const p of importedPrices) {
-    const article = document.createElement('article');
-    article.className = 'importItem';
+  for (const r of importedPrices) {
+    const button = document.createElement('button');
+    button.type = 'button';
 
-    const name = document.createElement('div');
-    name.className = 'strong';
+    button.className = 'item' + (
+      selectedImport &&
+      selectedImport.source_price_id === r.source_price_id
+        ? ' selected' : ''
+    );
 
-    name.textContent =
-      (p.product_name || 'Prodotto senza nome') +
-      ' · ' + money(p.price);
+    button.textContent =
+      (r.product_name || 'Prodotto senza nome') +
+      ' · ' + euro(r.price) +
+      '\n' +
+      (r.retailer_name || 'Supermercato non indicato') +
+      ' · ' +
+      (r.city || 'Comune non indicato') +
+      ' (' + (r.province || '?') + ')' +
+      ' · ' + dateIt(r.observed_on);
 
-    const details = document.createElement('div');
-    details.className = 'details';
+    button.onclick = () => {
+      if (busy) return;
+      selectedImport = r;
+      el('importNote').value = '';
 
-    field(details, 'EAN', p.ean);
-    field(details, 'Insegna', p.retailer_name);
-    field(details, 'Comune', p.city);
-    field(details, 'CAP', p.postcode);
-    field(details, 'Provincia indicata', p.province);
-    field(details, 'Data rilevazione', dateIT(p.observed_on));
-    field(details, 'ID Open Prices', p.source_price_id);
-    field(details, 'Unità prezzo', p.price_per || 'Non indicata');
-    field(details, 'Stato', p.status);
+      renderImports();
+      renderImportDetail();
 
-    article.append(name, details);
-    list.append(article);
+      el('importDetail').scrollIntoView({
+        behavior:'smooth',
+        block:'start'
+      });
+    };
+
+    list.append(button);
   }
 }
 
-// CARICAMENTO DEI DUE ELENCHI
+function renderImportDetail() {
+  show('importDetail', Boolean(selectedImport));
+
+  const container = el('importFields');
+  container.replaceChildren();
+  if (!selectedImport) return;
+
+  const r = selectedImport;
+
+  field(container,'Prodotto',r.product_name);
+  field(container,'EAN',r.ean);
+  field(container,'Insegna',r.retailer_name);
+  field(container,'Comune',r.city);
+  field(container,'CAP',r.postcode);
+  field(container,'Provincia attribuita',r.province);
+  field(container,'Prezzo',euro(r.price));
+  field(container,'Data rilevazione',dateIt(r.observed_on));
+  field(container,'Unità del prezzo',r.price_per || 'Non indicata');
+  field(container,'ID Open Prices',r.source_price_id);
+  field(container,'Stato',r.status);
+}
+
+// CARICAMENTO ELENCHI
 
 async function loadAll() {
-  // Non mostra un pannello parziale se una API
-  // rifiuta l'accesso.
-
-  const [manual, imported] = await Promise.all([
-    rpc(
-      'conviene_admin_pending_reports',
-      { p_max_rows: 50 }
-    ),
-
-    rpc(
-      'conviene_admin_imported_prices',
-      { p_max_rows: 50 }
-    )
+  const [manual,imports] = await Promise.all([
+    rpc('conviene_admin_pending_reports',{p_max_rows:50}),
+    rpc('conviene_admin_imported_prices',{p_max_rows:50})
   ]);
 
-  if (
-    !Array.isArray(manual) ||
-    !Array.isArray(imported)
-  ) {
-    throw new Error(
+  if (!Array.isArray(manual) || !Array.isArray(imports)) {
+    throw Error(
       'Il database non ha restituito elenchi validi.'
     );
   }
 
   manualReports = manual;
-  importedPrices = imported;
-  selectedReport = null;
+  importedPrices = imports;
+  selectedManual = null;
+  selectedImport = null;
 
-  $('note').value = '';
+  el('manualNote').value = '';
+  el('importNote').value = '';
 
   renderManual();
-  renderSelectedReport();
+  renderManualDetail();
   renderImports();
+  renderImportDetail();
 }
 
 // ACCESSO
 
-async function doLogin(event) {
+async function login(event) {
   event.preventDefault();
-
   if (busy) return;
 
   setBusy(true);
   message('');
 
   try {
-    const data = await rawRequest(
+    const data = await request(
       '/auth/v1/token?grant_type=password',
       {
-        body: {
-          email: $('email').value.trim(),
-          password: $('password').value
+        body:{
+          email:el('email').value.trim(),
+          password:el('password').value
         }
       }
     );
 
     accessToken = data.access_token;
     refreshToken = data.refresh_token || '';
-
     expiresAt =
-      Date.now() +
-      Number(data.expires_in || 3600) * 1000;
+      Date.now() + Number(data.expires_in || 3600) * 1000;
 
-    $('password').value = '';
+    el('password').value = '';
 
     await loadAll();
 
-    show('loginPanel', false);
-    show('adminPanel', true);
+    show('loginPanel',false);
+    show('adminPanel',true);
 
     message(
       'Accesso amministratore riuscito. ' +
-      'I prezzi importati sono in sola lettura.'
+      'Puoi esaminare entrambe le categorie di prezzi.'
     );
-  } catch (err) {
+  } catch (e) {
     accessToken = '';
     refreshToken = '';
     expiresAt = 0;
 
-    message(
-      'Accesso non riuscito: ' + err.message,
-      true
-    );
+    message('Accesso non riuscito: ' + e.message,true);
   } finally {
     setBusy(false);
   }
 }
 
-// AGGIORNA GLI ELENCHI
+// AGGIORNA
 
-async function doRefresh() {
+async function refreshAll() {
   if (busy) return;
 
   setBusy(true);
@@ -720,10 +675,10 @@ async function doRefresh() {
 
   try {
     await loadAll();
-    message('Elenco aggiornato.');
-  } catch (err) {
+    message('Elenchi aggiornati.');
+  } catch(e) {
     message(
-      'Errore aggiornamento: ' + err.message,
+      'Aggiornamento non riuscito: ' + e.message,
       true
     );
   } finally {
@@ -731,35 +686,48 @@ async function doRefresh() {
   }
 }
 
-// APPROVAZIONE/RIFIUTO SOLO SEGNALAZIONI MANUALI
+// APPROVA / VERIFICA / RIFIUTA
 
-async function doDecision(decision) {
-  if (busy || !selectedReport) return;
+async function decide(kind,decision) {
+  if (busy) return;
 
-  const note = $('note').value.trim();
+  const r = kind === 'import'
+    ? selectedImport
+    : selectedManual;
 
-  if (
-    note.length < 10 ||
-    note.length > 500
-  ) {
+  if (!r) return;
+
+  const note = el(
+    kind === 'import' ? 'importNote' : 'manualNote'
+  ).value.trim();
+
+  if (note.length < 10 || note.length > 500) {
     message(
-      'Inserisci una motivazione da 10 a 500 caratteri.',
+      'Scrivi una motivazione da 10 a 500 caratteri.',
       true
     );
     return;
   }
 
-  const id = selectedReport.id;
+  const id = kind === 'import'
+    ? r.source_price_id
+    : r.id;
 
-  const label =
-    decision === 'approved'
-      ? 'APPROVARE'
-      : 'RIFIUTARE';
+  const verb =
+    decision === 'reviewed'
+      ? 'SEGNARE COME VERIFICATO'
+      : decision === 'approved'
+        ? 'APPROVARE'
+        : 'RIFIUTARE';
+
+  const object = kind === 'import'
+    ? 'prezzo Open Prices'
+    : 'segnalazione manuale';
 
   if (!window.confirm(
-    label +
-    ' la segnalazione #' + id +
-    '? La decisione sarà registrata nel database.'
+    verb + ' il ' + object + ' #' + id +
+    '?\nLa decisione sarà salvata e non pubblicherà ' +
+    'alcun prezzo nell’app.'
   )) {
     return;
   }
@@ -768,29 +736,31 @@ async function doDecision(decision) {
   message('');
 
   try {
-    await rpc(
-      'conviene_review_price_report',
-      {
-        p_report_id: id,
-        p_decision: decision,
-        p_note: note
-      }
-    );
+    if (kind === 'import') {
+      await rpc('conviene_admin_review_imported_price',{
+        p_source_price_id:id,
+        p_decision:decision,
+        p_note:note
+      });
+    } else {
+      await rpc('conviene_review_price_report',{
+        p_report_id:id,
+        p_decision:decision,
+        p_note:note
+      });
+    }
 
     await loadAll();
 
     message(
-      'Segnalazione #' + id +
-      (
-        decision === 'approved'
-          ? ' approvata.'
-          : ' rifiutata.'
-      ) +
-      ' Nessun prezzo è stato pubblicato nell’app.'
+      'Decisione registrata: ' +
+      object + ' #' + id + ' → ' +
+      decision +
+      '. Nessuna pubblicazione automatica.'
     );
-  } catch (err) {
+  } catch(e) {
     message(
-      'Decisione non riuscita: ' + err.message,
+      'Operazione non riuscita: ' + e.message,
       true
     );
   } finally {
@@ -800,65 +770,68 @@ async function doDecision(decision) {
 
 // USCITA
 
-async function doLogout() {
+async function logout() {
   if (busy) return;
 
-  const token = accessToken;
+  const oldToken = accessToken;
 
   accessToken = '';
   refreshToken = '';
   expiresAt = 0;
-
+  selectedManual = null;
+  selectedImport = null;
   manualReports = [];
   importedPrices = [];
-  selectedReport = null;
 
-  $('password').value = '';
-  $('note').value = '';
+  el('password').value = '';
+  el('manualNote').value = '';
+  el('importNote').value = '';
 
-  show('adminPanel', false);
-  show('loginPanel', true);
-
+  show('adminPanel',false);
+  show('loginPanel',true);
   message('Sei uscito dal pannello.');
 
-  if (token) {
-    rawRequest('/auth/v1/logout', {
-      token
-    }).catch(() => {});
+  if (oldToken) {
+    request('/auth/v1/logout',{token:oldToken})
+      .catch(() => {});
   }
 }
 
 // PULSANTI
 
-$('loginForm').addEventListener('submit', doLogin);
+el('loginForm').addEventListener('submit',login);
 
-$('refreshBtn').addEventListener(
-  'click',
-  doRefresh
+el('refreshBtn').addEventListener(
+  'click',refreshAll
 );
 
-$('approveBtn').addEventListener(
-  'click',
-  () => doDecision('approved')
+el('logoutBtn').addEventListener(
+  'click',logout
 );
 
-$('rejectBtn').addEventListener(
-  'click',
-  () => doDecision('rejected')
+el('manualApproveBtn').addEventListener(
+  'click',()=>decide('manual','approved')
 );
 
-$('logoutBtn').addEventListener(
-  'click',
-  doLogout
+el('manualRejectBtn').addEventListener(
+  'click',()=>decide('manual','rejected')
+);
+
+el('importReviewBtn').addEventListener(
+  'click',()=>decide('import','reviewed')
+);
+
+el('importRejectBtn').addEventListener(
+  'click',()=>decide('import','rejected')
 );
 
 if (!CONFIG_OK) {
   message(
-    'Inserisci Project URL e chiave sb_publishable_ nel codice admin.html.',
+    'Inserisci Project URL e chiave sb_publishable_ ' +
+    'nel codice admin.html.',
     true
   );
 }
 </script>
-
 </body>
 </html>
