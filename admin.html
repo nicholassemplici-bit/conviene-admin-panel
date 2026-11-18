@@ -3,146 +3,197 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <title>CONVIENE · Amministrazione prezzi</title>
+  <title>CONVIENE Admin · Controllo prezzi</title>
   <style>
     :root {
-      color-scheme: light;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      color: #20372a;
       background: #f4f8f5;
-      color: #1b3426;
     }
     * { box-sizing: border-box; }
     body { margin: 0; }
-    header { background: #116e45; color: white; padding: 24px 18px; }
-    header .wrap, main { max-width: 900px; margin: auto; }
-    h1 { margin: 0; font-size: 1.7rem; letter-spacing: .02em; }
-    h2 { margin: .2rem 0 1rem; font-size: 1.2rem; }
-    p { line-height: 1.5; }
-    main { padding: 20px 16px 60px; }
+    header {
+      padding: 24px 16px;
+      background: #126e46;
+      color: #fff;
+    }
+    header > div, main {
+      width: min(920px, 100%);
+      margin: auto;
+    }
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 28px;
+    }
+    main { padding: 18px 14px 60px; }
     .panel {
-      background: white;
-      border: 1px solid #dce7e0;
-      border-radius: 16px;
-      padding: 22px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 9px #163a1c0b;
+      background: #fff;
+      border: 1px solid #dce7df;
+      border-radius: 15px;
+      padding: 19px;
+      margin: 0 0 16px;
     }
-    .muted { color: #617567; font-size: .93rem; }
-    .notice {
-      border-left: 4px solid #c59034;
-      background: #fff7e8;
-      padding: 12px 14px;
-      border-radius: 8px;
+    h2 { font-size: 21px; margin: 0 0 10px; }
+    h3 { font-size: 17px; margin: 16px 0 8px; }
+    p { line-height: 1.5; }
+    .muted {
+      color: #64796c;
+      font-size: 14px;
     }
-    .good { color: #136b41; }
-    .bad { color: #a12b28; }
+    .warning {
+      color: #77541e;
+      background: #fff5de;
+      padding: 13px;
+      border-radius: 10px;
+      line-height: 1.5;
+    }
+    .ok { color: #126b42; }
+    .error { color: #a62c2c; }
+    .hidden { display: none !important; }
     label {
       display: block;
-      font-weight: 650;
-      font-size: .93rem;
-      margin: 15px 0 6px;
+      font-weight: 700;
+      margin: 12px 0 5px;
     }
     input, textarea {
-      display: block;
       width: 100%;
-      font: inherit;
-      border: 1px solid #b9cfc0;
       padding: 11px;
-      border-radius: 9px;
+      font: inherit;
       background: white;
-      color: #1b3426;
+      color: #20372a;
+      border-radius: 9px;
+      border: 1px solid #bad0c0;
     }
-    textarea { min-height: 100px; resize: vertical; }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
     button {
       font: inherit;
       font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: #147b4b;
       border: 0;
       border-radius: 9px;
-      background: #137849;
-      color: white;
-      padding: 11px 15px;
-      cursor: pointer;
+      padding: 11px 14px;
     }
-    button.secondary { background: #e4f2e9; color: #115c37; }
-    button.danger { background: #b43e36; }
-    button:disabled { opacity: .45; cursor: default; }
-    .bar {
+    button.secondary {
+      background: #e4f2e9;
+      color: #12623c;
+    }
+    button.danger { background: #ad4039; }
+    button:disabled {
+      cursor: default;
+      opacity: .5;
+    }
+    .row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 10px;
       flex-wrap: wrap;
     }
     .actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 13px;
     }
     .item {
       display: block;
       width: 100%;
+      background: #fff;
+      color: #233a2b;
+      border: 1px solid #d9e7dd;
+      border-radius: 10px;
       text-align: left;
-      background: white;
-      color: #1b3426;
-      border: 1px solid #dae7dd;
-      padding: 14px;
-      border-radius: 12px;
-      margin: 10px 0;
+      margin: 8px 0;
+      padding: 13px;
       line-height: 1.6;
-    }
-    .item:hover, .item:focus {
-      border-color: #137849;
-      outline: 2px solid #13784933;
-    }
-    .item.selected { border: 2px solid #137849; }
-    a { color: #176e4b; overflow-wrap: anywhere; }
-    dt { color: #617567; font-size: .82rem; margin-top: 12px; }
-    dd {
-      margin: 2px 0 0;
+      white-space: pre-line;
       overflow-wrap: anywhere;
-      font-weight: 600;
     }
-    .hidden { display: none !important; }
-    #message { margin-bottom: 15px; white-space: pre-wrap; }
-    @media (max-width: 560px) {
-      .panel { padding: 16px; }
-      .actions button { flex: 1; }
+    .item.selected {
+      border: 2px solid #147b4b;
+    }
+    .importItem {
+      border-bottom: 1px solid #e5ede7;
+      padding: 13px 0;
+    }
+    .importItem:last-child { border-bottom: 0; }
+    .strong { font-weight: 750; }
+    .pill {
+      display: inline-block;
+      border-radius: 20px;
+      background: #fce9b9;
+      color: #754f12;
+      padding: 4px 9px;
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 8px 14px;
+      margin-top: 10px;
+    }
+    .details > div { overflow-wrap: anywhere; }
+    .details span {
+      display: block;
+      color: #65776b;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+    a {
+      color: #116d45;
+      overflow-wrap: anywhere;
+    }
+    #message {
+      margin: 0 0 15px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
+
 <header>
-  <div class="wrap">
-    <h1>CONVIENE</h1>
-    <div>Amministrazione · verifica dei prezzi</div>
+  <div>
+    <h1>CONVIENE Admin</h1>
+    <div>Gestione segnalazioni e prezzi importati</div>
   </div>
 </header>
+
 <main>
-  <p class="notice">
-    Le segnalazioni sono <strong>in attesa di verifica</strong>.
-    Approvare registra il controllo, ma non pubblica automaticamente
-    un prezzo come offerta attuale.
+  <p class="warning">
+    I prezzi importati da Open Prices sono dati storici da verificare.
+    La loro presenza non dimostra che siano disponibili oggi.
+    L'approvazione delle segnalazioni manuali non pubblica
+    automaticamente offerte nell'app.
   </p>
 
-  <div id="message" class="hidden" role="status" aria-live="polite"></div>
+  <div id="message" class="panel hidden"
+       role="status" aria-live="polite"></div>
 
-  <section id="loginPanel" class="panel">
+  <section class="panel" id="loginPanel">
     <h2>Accesso amministratore</h2>
+
     <p class="muted">
-      Usa email e password del tuo account CONVIENE.
-      La password non viene salvata in questa pagina.
+      Accedi con l'account CONVIENE autorizzato.
+      La password non viene memorizzata dal pannello.
     </p>
 
     <form id="loginForm">
       <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="username" required>
+      <input id="email" type="email"
+             autocomplete="username" required>
 
       <label for="password">Password</label>
       <input id="password" type="password"
-        autocomplete="current-password" minlength="6" required>
+             autocomplete="current-password"
+             minlength="6" required>
 
       <div class="actions">
         <button id="loginBtn" type="submit">Accedi</button>
@@ -150,28 +201,46 @@
     </form>
   </section>
 
-  <section id="adminPanel" class="hidden">
-    <div class="panel">
-      <div class="bar">
-        <div>
-          <h2>Segnalazioni in attesa</h2>
-          <p id="count" class="muted">Caricamento...</p>
-        </div>
-        <div class="actions">
-          <button id="refreshBtn" class="secondary">Aggiorna elenco</button>
-          <button id="logoutBtn" class="secondary">Esci</button>
+  <div id="adminPanel" class="hidden">
+
+    <div class="panel row">
+      <div>
+        <h2>Amministrazione prezzi</h2>
+        <div class="muted">
+          Dati accessibili solo a un amministratore autorizzato.
         </div>
       </div>
-      <div id="reportList"></div>
+
+      <div class="actions">
+        <button class="secondary" id="refreshBtn"
+                type="button">Aggiorna tutto</button>
+        <button class="secondary" id="logoutBtn"
+                type="button">Esci</button>
+      </div>
     </div>
 
-    <section id="detailPanel" class="panel hidden">
-      <h2>Esamina segnalazione</h2>
-      <dl id="reportDetails"></dl>
-      <p class="notice">
-        Verifica che EAN, prezzo, data, insegna e fonte siano
-        attendibili prima di decidere. Un link o una dichiarazione
-        dell'utente non garantiscono la veridicità del dato.
+    <section class="panel">
+      <div class="row">
+        <h2>Segnalazioni manuali</h2>
+        <span id="manualCount" class="pill">—</span>
+      </div>
+
+      <p class="muted">
+        Puoi approvare o rifiutare le segnalazioni inviate
+        dall'app, dopo averne verificato la fonte.
+      </p>
+
+      <div id="manualList"></div>
+    </section>
+
+    <section class="panel hidden" id="manualDetail">
+      <h3>Dettagli segnalazione selezionata</h3>
+      <div id="manualFields" class="details"></div>
+
+      <p class="warning">
+        Approva soltanto se il prezzo e la sua fonte sono stati
+        verificati. Un prezzo approvato non diventa
+        automaticamente un'offerta attuale.
       </p>
 
       <label for="note">
@@ -179,158 +248,65 @@
       </label>
 
       <textarea id="note" maxlength="500"
-        placeholder="Descrivi le verifiche effettuate o il motivo del rifiuto."></textarea>
+        placeholder="Indica le verifiche eseguite oppure il motivo del rifiuto."></textarea>
 
       <div class="actions">
-        <button id="approveBtn">Approva</button>
-        <button id="rejectBtn" class="danger">Rifiuta</button>
+        <button id="approveBtn" type="button">Approva</button>
+        <button id="rejectBtn" class="danger"
+                type="button">Rifiuta</button>
       </div>
     </section>
-  </section>
+
+    <section class="panel">
+      <div class="row">
+        <h2>Prezzi importati da Open Prices</h2>
+        <span id="importCount" class="pill">—</span>
+      </div>
+
+      <p class="muted">
+        Elenco in sola lettura dei prezzi con stato
+        <strong>unverified</strong>. Nessun pulsante di approvazione:
+        dobbiamo ancora progettare il controllo delle località
+        e delle fonti.
+      </p>
+
+      <div id="importList"></div>
+    </section>
+
+  </div>
 </main>
 
 <script>
 'use strict';
 
-// Gli stessi due valori PUBBLICI dell'app CONVIENE.
-// Non inserire mai sb_secret_ o password nel codice.
+// Usa SOLO i due valori PUBBLICI dell'App.js funzionante.
+// Mai inserire password o chiavi sb_secret_ su GitHub.
 
 const SUPABASE_URL = 'https://nlzwqvotupmrwwngoqtf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_rwhW55hI0B6fwDgqlOFpig_4FGEpA3t';
 
-const BASE = String(SUPABASE_URL).trim().replace(/\/+$/, '');
+const BASE = String(SUPABASE_URL)
+  .trim()
+  .replace(/\/+$/, '');
+
 const KEY = String(SUPABASE_KEY).trim();
 
 const CONFIG_OK =
   /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(BASE) &&
   KEY.startsWith('sb_publishable_');
 
-let access = '';
-let refresh = '';
+let accessToken = '';
+let refreshToken = '';
 let expiresAt = 0;
-let reports = [];
-let chosen = null;
+let manualReports = [];
+let importedPrices = [];
+let selectedReport = null;
 let busy = false;
 
-const el = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-const visible = (node, show) => {
-  node.classList.toggle('hidden', !show);
-};
-
-function message(text, isError = false) {
-  const node = el('message');
-  node.textContent = text;
-  node.className = isError ? 'panel bad' : 'panel good';
-  visible(node, !!text);
-}
-
-function setBusy(value) {
-  busy = value;
-  for (const id of [
-    'loginBtn', 'refreshBtn', 'approveBtn', 'rejectBtn'
-  ]) {
-    el(id).disabled = value;
-  }
-}
-
-async function rawRequest(
-  path,
-  { method = 'POST', body, token = '' } = {}
-) {
-  if (!CONFIG_OK) {
-    throw new Error(
-      'Configura Project URL e sb_publishable_ nel file admin.html.'
-    );
-  }
-
-  const res = await fetch(BASE + path, {
-    method,
-    headers: {
-      apikey: KEY,
-      Accept: 'application/json',
-      ...(token ? { Authorization: 'Bearer ' + token } : {}),
-      ...(body !== undefined
-        ? { 'Content-Type': 'application/json' }
-        : {}),
-    },
-    ...(body !== undefined
-      ? { body: JSON.stringify(body) }
-      : {}),
-  });
-
-  const text = await res.text();
-  let data;
-
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = text;
-  }
-
-  if (!res.ok) {
-    const reason =
-      data && typeof data === 'object'
-        ? data.message ||
-          data.error_description ||
-          data.msg ||
-          data.error ||
-          data.code
-        : data;
-
-    const err = new Error(
-      'HTTP ' + res.status + ': ' +
-      String(reason || 'Richiesta fallita')
-    );
-    err.status = res.status;
-    throw err;
-  }
-
-  return data;
-}
-
-async function userToken() {
-  if (!access) {
-    throw new Error('Accedi nuovamente.');
-  }
-
-  if (Date.now() < expiresAt - 60000) {
-    return access;
-  }
-
-  if (!refresh) {
-    throw new Error('Sessione scaduta. Accedi nuovamente.');
-  }
-
-  const data = await rawRequest(
-    '/auth/v1/token?grant_type=refresh_token',
-    { body: { refresh_token: refresh } }
-  );
-
-  access = data.access_token;
-  refresh = data.refresh_token || refresh;
-  expiresAt = Date.now() +
-    Number(data.expires_in || 3600) * 1000;
-
-  return access;
-}
-
-async function rpc(name, body) {
-  return rawRequest('/rest/v1/rpc/' + name, {
-    token: await userToken(),
-    body,
-  });
-}
-
-function addDetail(label, value) {
-  const dt = document.createElement('dt');
-  dt.textContent = label;
-
-  const dd = document.createElement('dd');
-  dd.textContent = String(value ?? '—');
-
-  el('reportDetails').append(dt, dd);
-}
+const show = (id, isVisible) =>
+  $(id).classList.toggle('hidden', !isVisible);
 
 const money = n =>
   Number(n).toLocaleString('it-IT', {
@@ -338,130 +314,350 @@ const money = n =>
     currency: 'EUR'
   });
 
-function renderDetails() {
-  visible(el('detailPanel'), !!chosen);
-  el('reportDetails').replaceChildren();
+const dateIT = d =>
+  d
+    ? String(d).slice(0, 10).split('-').reverse().join('/')
+    : 'Non indicata';
 
-  if (!chosen) return;
+function message(text, error = false) {
+  $('message').textContent = text;
+  $('message').className =
+    'panel ' + (error ? 'error' : 'ok');
 
-  const r = chosen;
+  show('message', !!text);
+}
 
-  addDetail('ID segnalazione', r.id);
-  addDetail('EAN', r.ean);
-  addDetail('Supermercato', r.retailer_name);
-  addDetail(
-    'Località',
-    r.municipality + ' (' + r.province + ')'
-  );
-  addDetail('Prezzo segnalato', money(r.price));
-  addDetail('Data osservazione', r.observed_on);
+function setBusy(value) {
+  busy = value;
 
-  const source = {
-    shelf_label: 'Etichetta scaffale',
-    receipt: 'Scontrino',
-    official_website: 'Sito ufficiale',
-  };
-
-  addDetail('Fonte', source[r.source_type] || r.source_type);
-  addDetail(
-    'Data invio',
-    new Date(r.created_at).toLocaleString('it-IT')
-  );
-
-  if (r.source_url) {
-    const dt = document.createElement('dt');
-    dt.textContent = 'Link fonte';
-
-    const dd = document.createElement('dd');
-
-    try {
-      const url = new URL(r.source_url);
-
-      if (!['https:', 'http:'].includes(url.protocol)) {
-        throw Error('Protocollo non consentito');
-      }
-
-      const a = document.createElement('a');
-      a.href = url.href;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.textContent = url.href;
-      dd.append(a);
-    } catch {
-      dd.textContent = 'Link non valido';
-    }
-
-    el('reportDetails').append(dt, dd);
+  for (const id of [
+    'loginBtn',
+    'refreshBtn',
+    'approveBtn',
+    'rejectBtn'
+  ]) {
+    $(id).disabled = value;
   }
 }
 
-function renderList() {
-  const list = el('reportList');
+function field(container, label, value) {
+  const box = document.createElement('div');
+
+  const heading = document.createElement('span');
+  heading.textContent = label;
+
+  const content = document.createElement('div');
+  content.className = 'strong';
+
+  content.textContent = String(
+    value == null || value === '' ? '—' : value
+  );
+
+  box.append(heading, content);
+  container.append(box);
+}
+
+async function rawRequest(
+  path,
+  { method = 'POST', body, token } = {}
+) {
+  if (!CONFIG_OK) {
+    throw new Error(
+      'Controlla Project URL e chiave sb_publishable_ nel file admin.html.'
+    );
+  }
+
+  const response = await fetch(BASE + path, {
+    method,
+
+    headers: {
+      apikey: KEY,
+      Accept: 'application/json',
+
+      ...(token
+        ? { Authorization: 'Bearer ' + token }
+        : {}),
+
+      ...(body !== undefined
+        ? { 'Content-Type': 'application/json' }
+        : {})
+    },
+
+    ...(body !== undefined
+      ? { body: JSON.stringify(body) }
+      : {})
+  });
+
+  const raw = await response.text();
+  let data;
+
+  try {
+    data = raw ? JSON.parse(raw) : null;
+  } catch (_) {
+    data = raw;
+  }
+
+  if (!response.ok) {
+    const detail =
+      data && typeof data === 'object'
+        ? (
+            data.message ||
+            data.error_description ||
+            data.msg ||
+            data.error ||
+            data.code
+          )
+        : data;
+
+    throw new Error(
+      'HTTP ' + response.status + ': ' +
+      String(detail || 'Richiesta non riuscita')
+    );
+  }
+
+  return data;
+}
+
+async function currentToken() {
+  if (!accessToken) {
+    throw new Error('Accedi nuovamente.');
+  }
+
+  if (Date.now() < expiresAt - 60000) {
+    return accessToken;
+  }
+
+  if (!refreshToken) {
+    throw new Error(
+      'Sessione scaduta. Accedi nuovamente.'
+    );
+  }
+
+  const data = await rawRequest(
+    '/auth/v1/token?grant_type=refresh_token',
+    {
+      body: { refresh_token: refreshToken }
+    }
+  );
+
+  accessToken = data.access_token;
+  refreshToken = data.refresh_token || refreshToken;
+
+  expiresAt =
+    Date.now() +
+    Number(data.expires_in || 3600) * 1000;
+
+  return accessToken;
+}
+
+async function rpc(name, body) {
+  return rawRequest(
+    '/rest/v1/rpc/' + name,
+    {
+      token: await currentToken(),
+      body
+    }
+  );
+}
+
+// SEGNALAZIONI MANUALI
+
+function renderManual() {
+  $('manualCount').textContent =
+    manualReports.length + ' in attesa';
+
+  const list = $('manualList');
   list.replaceChildren();
 
-  el('count').textContent =
-    reports.length + ' segnalazioni mostrate (massimo 50)';
-
-  if (!reports.length) {
+  if (!manualReports.length) {
     const p = document.createElement('p');
     p.className = 'muted';
-    p.textContent = 'Nessuna segnalazione in attesa.';
+
+    p.textContent =
+      'Nessuna segnalazione manuale in attesa.';
+
     list.append(p);
   }
 
-  for (const r of reports) {
-    const b = document.createElement('button');
-    b.className =
-      'item' + (chosen?.id === r.id ? ' selected' : '');
-    b.type = 'button';
+  for (const r of manualReports) {
+    const button = document.createElement('button');
 
-    b.textContent =
+    button.type = 'button';
+
+    button.className =
+      'item' +
+      (selectedReport && selectedReport.id === r.id
+        ? ' selected'
+        : '');
+
+    button.textContent =
       '#' + r.id +
       ' · ' + r.retailer_name +
       ' · ' + money(r.price) +
       '\n' + r.municipality +
       ' (' + r.province + ')' +
-      ' · ' + r.observed_on +
+      ' · ' + dateIT(r.observed_on) +
       ' · EAN ' + r.ean;
 
-    b.style.whiteSpace = 'pre-line';
-
-    b.onclick = () => {
+    button.onclick = () => {
       if (busy) return;
 
-      chosen = r;
-      el('note').value = '';
+      selectedReport = r;
+      $('note').value = '';
 
-      renderList();
-      renderDetails();
-
-      el('detailPanel').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+      renderManual();
+      renderSelectedReport();
     };
 
-    list.append(b);
+    list.append(button);
   }
 }
 
-async function loadReports() {
-  const data = await rpc(
-    'conviene_admin_pending_reports',
-    { p_max_rows: 50 }
+function renderSelectedReport() {
+  show('manualDetail', !!selectedReport);
+
+  const container = $('manualFields');
+  container.replaceChildren();
+
+  if (!selectedReport) return;
+
+  const r = selectedReport;
+
+  field(container, 'ID', r.id);
+  field(container, 'EAN', r.ean);
+  field(container, 'Supermercato', r.retailer_name);
+  field(container, 'Comune', r.municipality);
+  field(container, 'Provincia', r.province);
+  field(container, 'Prezzo segnalato', money(r.price));
+  field(container, 'Data rilevazione', dateIT(r.observed_on));
+  field(container, 'Fonte', r.source_type);
+
+  field(
+    container,
+    'Data invio',
+    r.created_at
+      ? new Date(r.created_at).toLocaleString('it-IT')
+      : '—'
   );
 
-  if (!Array.isArray(data)) {
-    throw new Error('Elenco non valido');
+  if (r.source_url) {
+    try {
+      const url = new URL(r.source_url);
+
+      if (
+        url.protocol !== 'https:' &&
+        url.protocol !== 'http:'
+      ) {
+        throw new Error('Protocollo non consentito');
+      }
+
+      const area = document.createElement('div');
+
+      const label = document.createElement('span');
+      label.textContent = 'Link fonte';
+
+      const link = document.createElement('a');
+
+      link.href = url.href;
+      link.textContent = url.href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+
+      area.append(label, link);
+      container.append(area);
+    } catch (_) {
+      field(container, 'Link fonte', 'Link non valido');
+    }
+  }
+}
+
+// PREZZI OPEN PRICES - SOLA LETTURA
+
+function renderImports() {
+  $('importCount').textContent =
+    importedPrices.length + ' da verificare';
+
+  const list = $('importList');
+  list.replaceChildren();
+
+  if (!importedPrices.length) {
+    const p = document.createElement('p');
+
+    p.className = 'muted';
+    p.textContent =
+      'Nessun prezzo importato da verificare.';
+
+    list.append(p);
   }
 
-  reports = data;
-  chosen = null;
-  el('note').value = '';
+  for (const p of importedPrices) {
+    const article = document.createElement('article');
+    article.className = 'importItem';
 
-  renderList();
-  renderDetails();
+    const name = document.createElement('div');
+    name.className = 'strong';
+
+    name.textContent =
+      (p.product_name || 'Prodotto senza nome') +
+      ' · ' + money(p.price);
+
+    const details = document.createElement('div');
+    details.className = 'details';
+
+    field(details, 'EAN', p.ean);
+    field(details, 'Insegna', p.retailer_name);
+    field(details, 'Comune', p.city);
+    field(details, 'CAP', p.postcode);
+    field(details, 'Provincia indicata', p.province);
+    field(details, 'Data rilevazione', dateIT(p.observed_on));
+    field(details, 'ID Open Prices', p.source_price_id);
+    field(details, 'Unità prezzo', p.price_per || 'Non indicata');
+    field(details, 'Stato', p.status);
+
+    article.append(name, details);
+    list.append(article);
+  }
 }
+
+// CARICAMENTO DEI DUE ELENCHI
+
+async function loadAll() {
+  // Non mostra un pannello parziale se una API
+  // rifiuta l'accesso.
+
+  const [manual, imported] = await Promise.all([
+    rpc(
+      'conviene_admin_pending_reports',
+      { p_max_rows: 50 }
+    ),
+
+    rpc(
+      'conviene_admin_imported_prices',
+      { p_max_rows: 50 }
+    )
+  ]);
+
+  if (
+    !Array.isArray(manual) ||
+    !Array.isArray(imported)
+  ) {
+    throw new Error(
+      'Il database non ha restituito elenchi validi.'
+    );
+  }
+
+  manualReports = manual;
+  importedPrices = imported;
+  selectedReport = null;
+
+  $('note').value = '';
+
+  renderManual();
+  renderSelectedReport();
+  renderImports();
+}
+
+// ACCESSO
 
 async function doLogin(event) {
   event.preventDefault();
@@ -476,36 +672,37 @@ async function doLogin(event) {
       '/auth/v1/token?grant_type=password',
       {
         body: {
-          email: el('email').value.trim(),
-          password: el('password').value
+          email: $('email').value.trim(),
+          password: $('password').value
         }
       }
     );
 
-    access = data.access_token;
-    refresh = data.refresh_token || '';
-    expiresAt = Date.now() +
+    accessToken = data.access_token;
+    refreshToken = data.refresh_token || '';
+
+    expiresAt =
+      Date.now() +
       Number(data.expires_in || 3600) * 1000;
 
-    el('password').value = '';
+    $('password').value = '';
 
-    // Questo controllo viene eseguito sul database.
-    await loadReports();
+    await loadAll();
 
-    visible(el('loginPanel'), false);
-    visible(el('adminPanel'), true);
+    show('loginPanel', false);
+    show('adminPanel', true);
 
     message(
       'Accesso amministratore riuscito. ' +
-      'Controlla attentamente le fonti prima di decidere.'
+      'I prezzi importati sono in sola lettura.'
     );
-  } catch (e) {
-    access = '';
-    refresh = '';
+  } catch (err) {
+    accessToken = '';
+    refreshToken = '';
     expiresAt = 0;
 
     message(
-      'Accesso non riuscito: ' + e.message,
+      'Accesso non riuscito: ' + err.message,
       true
     );
   } finally {
@@ -513,25 +710,55 @@ async function doLogin(event) {
   }
 }
 
-async function doDecision(decision) {
-  if (busy || !chosen) return;
+// AGGIORNA GLI ELENCHI
 
-  const note = el('note').value.trim();
+async function doRefresh() {
+  if (busy) return;
 
-  if (note.length < 10 || note.length > 500) {
+  setBusy(true);
+  message('');
+
+  try {
+    await loadAll();
+    message('Elenco aggiornato.');
+  } catch (err) {
     message(
-      'Inserisci una motivazione tra 10 e 500 caratteri.',
+      'Errore aggiornamento: ' + err.message,
+      true
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
+// APPROVAZIONE/RIFIUTO SOLO SEGNALAZIONI MANUALI
+
+async function doDecision(decision) {
+  if (busy || !selectedReport) return;
+
+  const note = $('note').value.trim();
+
+  if (
+    note.length < 10 ||
+    note.length > 500
+  ) {
+    message(
+      'Inserisci una motivazione da 10 a 500 caratteri.',
       true
     );
     return;
   }
 
-  const id = chosen.id;
-  const action =
-    decision === 'approved' ? 'APPROVARE' : 'RIFIUTARE';
+  const id = selectedReport.id;
 
-  if (!confirm(
-    action + ' la segnalazione #' + id +
+  const label =
+    decision === 'approved'
+      ? 'APPROVARE'
+      : 'RIFIUTARE';
+
+  if (!window.confirm(
+    label +
+    ' la segnalazione #' + id +
     '? La decisione sarà registrata nel database.'
   )) {
     return;
@@ -541,24 +768,29 @@ async function doDecision(decision) {
   message('');
 
   try {
-    await rpc('conviene_review_price_report', {
-      p_report_id: id,
-      p_decision: decision,
-      p_note: note,
-    });
-
-    await loadReports();
-
-    message(
-      'Segnalazione #' + id + ' ' +
-      (decision === 'approved'
-        ? 'approvata'
-        : 'rifiutata') +
-      '. Nessun prezzo è stato pubblicato automaticamente.'
+    await rpc(
+      'conviene_review_price_report',
+      {
+        p_report_id: id,
+        p_decision: decision,
+        p_note: note
+      }
     );
-  } catch (e) {
+
+    await loadAll();
+
     message(
-      'Operazione non riuscita: ' + e.message,
+      'Segnalazione #' + id +
+      (
+        decision === 'approved'
+          ? ' approvata.'
+          : ' rifiutata.'
+      ) +
+      ' Nessun prezzo è stato pubblicato nell’app.'
+    );
+  } catch (err) {
+    message(
+      'Decisione non riuscita: ' + err.message,
       true
     );
   } finally {
@@ -566,68 +798,67 @@ async function doDecision(decision) {
   }
 }
 
-async function doRefresh() {
+// USCITA
+
+async function doLogout() {
   if (busy) return;
 
-  setBusy(true);
-  message('');
+  const token = accessToken;
 
-  try {
-    await loadReports();
-  } catch (e) {
-    message('Errore: ' + e.message, true);
-  } finally {
-    setBusy(false);
-  }
-}
-
-function doLogout() {
-  const old = access;
-
-  access = '';
-  refresh = '';
+  accessToken = '';
+  refreshToken = '';
   expiresAt = 0;
-  chosen = null;
-  reports = [];
 
-  el('password').value = '';
-  el('note').value = '';
+  manualReports = [];
+  importedPrices = [];
+  selectedReport = null;
 
-  visible(el('adminPanel'), false);
-  visible(el('loginPanel'), true);
+  $('password').value = '';
+  $('note').value = '';
+
+  show('adminPanel', false);
+  show('loginPanel', true);
 
   message('Sei uscito dal pannello.');
 
-  if (old) {
+  if (token) {
     rawRequest('/auth/v1/logout', {
-      token: old
+      token
     }).catch(() => {});
   }
 }
 
-el('loginForm').addEventListener('submit', doLogin);
+// PULSANTI
 
-el('refreshBtn').addEventListener('click', doRefresh);
+$('loginForm').addEventListener('submit', doLogin);
 
-el('approveBtn').addEventListener(
+$('refreshBtn').addEventListener(
+  'click',
+  doRefresh
+);
+
+$('approveBtn').addEventListener(
   'click',
   () => doDecision('approved')
 );
 
-el('rejectBtn').addEventListener(
+$('rejectBtn').addEventListener(
   'click',
   () => doDecision('rejected')
 );
 
-el('logoutBtn').addEventListener('click', doLogout);
+$('logoutBtn').addEventListener(
+  'click',
+  doLogout
+);
 
 if (!CONFIG_OK) {
   message(
-    'Inserisci Project URL e chiave sb_publishable_ ' +
-    'nelle prime righe dello script.',
+    'Inserisci Project URL e chiave sb_publishable_ nel codice admin.html.',
     true
   );
 }
 </script>
+
 </body>
 </html>
